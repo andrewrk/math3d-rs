@@ -1,6 +1,6 @@
 # matrix4-rs
 
-A simple library for computer-graphics matrix calculations, because I'm not
+A simple rust library for computer-graphics matrix calculations, because I'm not
 smart and/or educated enough to understand the fancy generalized linear algebra
 libraries.
 
