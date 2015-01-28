@@ -1,4 +1,4 @@
-# matrix4-rs
+# math3d-rs
 
 A simple rust library for computer-graphics matrix calculations, because I'm not
 smart and/or educated enough to understand the fancy generalized linear algebra
