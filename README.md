@@ -7,7 +7,7 @@ libraries.
 This library only has these types:
 
  * Matrix4
- * Vector4
+ * Vector3
 
 It only supports operations on these types that I personally understand. If you
 make a pull request that adds more linear algebra, you have to teach me what it

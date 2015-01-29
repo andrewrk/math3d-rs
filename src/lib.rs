@@ -1,6 +1,7 @@
 #![allow(unstable)]
 
 use std::ops::{Index, IndexMut};
+use std::num::Float;
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct Matrix4([[f32; 4]; 4]);
@@ -57,7 +58,7 @@ impl Matrix4 {
         self.0[2][3] *= z;
     }
 
-    pub fn scale_by_vector(&mut self, v: &Vector4) {
+    pub fn scale_by_vector(&mut self, v: &Vector3) {
         self.scale(v[0], v[1], v[2])
     }
 
@@ -70,15 +71,15 @@ impl Matrix4 {
         self.0[3][2] += self.0[0][2] * x + self.0[1][2] * y + self.0[2][2] * z;
     }
 
-    pub fn translate_by_vector(&mut self, v: &Vector4) {
+    pub fn translate_by_vector(&mut self, v: &Vector3) {
         self.translate(v[0], v[1], v[2])
     }
 }
 
 #[derive(Copy, Clone, PartialEq)]
-pub struct Vector4([f32; 4]);
+pub struct Vector3([f32; 3]);
 
-impl Index<usize> for Vector4 {
+impl Index<usize> for Vector3 {
     type Output = f32;
 
     fn index<'a>(&'a self, index: &usize) -> &'a f32 {
@@ -86,7 +87,7 @@ impl Index<usize> for Vector4 {
     }
 }
 
-impl IndexMut<usize> for Vector4 {
+impl IndexMut<usize> for Vector3 {
     type Output = f32;
 
     fn index_mut<'a>(&'a mut self, index: &usize) -> &'a mut f32 {
@@ -94,21 +95,74 @@ impl IndexMut<usize> for Vector4 {
     }
 }
 
-impl Vector4 {
-    pub fn as_array(&self) -> &[f32; 4] {
+impl Vector3 {
+    pub fn as_array(&self) -> &[f32; 3] {
         &self.0
     }
 
-    pub fn from_array(array: [f32; 4]) -> Self {
-        Vector4(array)
+    pub fn from_array(array: [f32; 3]) -> Self {
+        Vector3(array)
     }
 
-    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
-        Vector4::from_array([x, y, z, w])
+    pub fn new(x: f32, y: f32, z: f32) -> Self {
+        Vector3::from_array([x, y, z])
     }
 
     pub fn from_scalar(scalar: f32) -> Self {
-        Vector4::from_array([scalar, scalar, scalar, 1.0])
+        Vector3::from_array([scalar, scalar, scalar])
+    }
+
+    pub fn length(&self) -> f32 {
+        self.dot(self).sqrt()
+    }
+
+    pub fn distance(&self, other: &Vector3) -> f32 {
+        let mut result = other.clone();
+        result.subtract(self);
+        result.length()
+    }
+
+    pub fn dot(&self, other: &Vector3) -> f32 {
+        self.0[0] * other.0[0] +
+        self.0[1] * other.0[1] +
+        self.0[2] * other.0[2]
+    }
+
+    /// returns the cross product
+    pub fn cross(&self, other: &Vector3) -> Vector3 {
+        Vector3::new(
+			self.0[1] * other.0[2] - other.0[1] * self.0[2],
+			self.0[2] * other.0[0] - other.0[2] * self.0[0],
+			self.0[0] * other.0[1] - other.0[0] * self.0[1])
+    }
+
+    pub fn normalize(&mut self) {
+        let value = self.dot(self).rsqrt();
+        self.scale(value);
+    }
+
+    pub fn subtract(&mut self, other: &Vector3) {
+        let mut result = other.clone();
+        result.negate();
+        self.add(&result);
+    }
+
+    pub fn add(&mut self, other: &Vector3) {
+        self.0[0] += other.0[0];
+        self.0[1] += other.0[1];
+        self.0[2] += other.0[2];
+    }
+
+    pub fn negate(&mut self) {
+        self.0[0] = -self.0[0];
+        self.0[1] = -self.0[1];
+        self.0[2] = -self.0[2];
+    }
+
+    pub fn scale(&mut self, scalar: f32) {
+        self.0[0] *= scalar;
+        self.0[1] *= scalar;
+        self.0[2] *= scalar;
     }
 }
 
@@ -131,7 +185,7 @@ fn test_scale() {
     assert_eq!(m[2][2], 1.0);
     m.scale(3.0, 3.0, 3.0);
     assert_eq!(m[2][2], 3.0);
-    m.scale_by_vector(&Vector4::new(2.0, 4.0, 3.0, 1.0));
+    m.scale_by_vector(&Vector3::new(2.0, 4.0, 3.0));
     assert_eq!(m[2][2], 9.0);
 }
 
