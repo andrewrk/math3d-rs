@@ -1,6 +1,6 @@
 #![allow(unstable)]
 
-use std::ops::Index;
+use std::ops::{Index, IndexMut};
 
 #[derive(Copy, Clone, PartialEq)]
 pub struct Matrix4([[f32; 4]; 4]);
@@ -10,6 +10,14 @@ impl Index<usize> for Matrix4 {
 
     fn index<'a>(&'a self, row: &usize) -> &'a [f32; 4] {
         &self.0[*row]
+    }
+}
+
+impl IndexMut<usize> for Matrix4 {
+    type Output = [f32; 4];
+
+    fn index_mut<'a>(&'a mut self, row: &usize) -> &'a mut [f32; 4] {
+        &mut self.0[*row]
     }
 }
 
@@ -75,6 +83,14 @@ impl Index<usize> for Vector4 {
 
     fn index<'a>(&'a self, index: &usize) -> &'a f32 {
         &self.0[*index]
+    }
+}
+
+impl IndexMut<usize> for Vector4 {
+    type Output = f32;
+
+    fn index_mut<'a>(&'a mut self, index: &usize) -> &'a mut f32 {
+        &mut self.0[*index]
     }
 }
 
