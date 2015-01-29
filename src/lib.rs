@@ -64,24 +64,14 @@ impl Matrix4 {
 
     /// Builds a scale 4 * 4 matrix created from 3 scalars.
     /// Input matrix multiplied by this scale matrix.
-    pub fn scale(&mut self, x: f32, y: f32, z: f32) {
-        self.0[0][0] *= x;
-        self.0[0][1] *= x;
-        self.0[0][2] *= x;
-        self.0[0][3] *= x;
-
-        self.0[1][0] *= y;
-        self.0[1][1] *= y;
-        self.0[1][2] *= y;
-        self.0[1][3] *= y;
-
-        self.0[2][0] *= z;
-        self.0[2][1] *= z;
-        self.0[2][2] *= z;
-        self.0[2][3] *= z;
+    pub fn scale(&self, x: f32, y: f32, z: f32) -> Self {
+        Matrix4::from_array([[self.0[0][0] * x, self.0[0][1] * y, self.0[0][2] * z, self.0[0][3]],
+                             [self.0[1][0] * x, self.0[1][1] * y, self.0[1][2] * z, self.0[1][3]],
+                             [self.0[2][0] * x, self.0[2][1] * y, self.0[2][2] * z, self.0[2][3]],
+                             [self.0[3][0] * x, self.0[3][1] * y, self.0[3][2] * z, self.0[3][3]]])
     }
 
-    pub fn scale_by_vector(&mut self, v: &Vector3) {
+    pub fn scale_by_vector(&self, v: &Vector3) -> Self {
         self.scale(v[0], v[1], v[2])
     }
 
@@ -247,12 +237,19 @@ fn test_matrix_to_array() {
 
 #[test]
 fn test_scale() {
-    let mut m = Matrix4::identity();
-    assert_eq!(m[2][2], 1.0);
-    m.scale(3.0, 3.0, 3.0);
-    assert_eq!(m[2][2], 3.0);
-    m.scale_by_vector(&Vector3::new(2.0, 4.0, 3.0));
-    assert_eq!(m[2][2], 9.0);
+    let m = Matrix4::from_array([
+            [0.840188, 0.911647, 0.277775, 0.364784],
+            [0.394383, 0.197551, 0.55397, 0.513401],
+            [0.783099, 0.335223, 0.477397, 0.95223],
+            [0.79844, 0.76823, 0.628871, 0.916195]]);
+    let expected = Matrix4::from_array([
+            [0.118973, 0.653922, 0.176585, 0.364784],
+            [0.0558456, 0.141703, 0.352165, 0.513401],
+            [0.110889, 0.240454, 0.303487, 0.95223],
+            [0.113061, 0.551049, 0.399781, 0.916195]]);
+    let answer = m.scale(0.141603, 0.717297, 0.635712);
+    println!("answer:\n{:?}", answer);
+    assert_matrix_eq(&answer, &expected);
 }
 
 #[test]
