@@ -38,6 +38,7 @@ impl Matrix4 {
                              [0.0, 0.0, 0.0, 1.0]])
     }
 
+    /// Creates a matrix for an orthographic parallel viewing volume.
     pub fn ortho(left: f32, right: f32, bottom: f32, top: f32) -> Self {
         let mut m = Matrix4::identity();
         m.0[0][0] = 2.0 / (right - left);
