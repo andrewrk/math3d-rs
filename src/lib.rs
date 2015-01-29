@@ -98,6 +98,13 @@ impl Matrix4 {
         self.translate(v[0], v[1], v[2])
     }
 
+    pub fn transpose(&self) -> Self {
+        Matrix4::from_array([[self.0[0][0], self.0[1][0], self.0[2][0], self.0[3][0]],
+                             [self.0[0][1], self.0[1][1], self.0[2][1], self.0[3][1]],
+                             [self.0[0][2], self.0[1][2], self.0[2][2], self.0[3][2]],
+                             [self.0[0][3], self.0[1][3], self.0[2][3], self.0[3][3]]])
+    }
+
     /// matrix multiplication
     pub fn mult(&self, other: &Matrix4) -> Matrix4 {
         Matrix4::from_array([
