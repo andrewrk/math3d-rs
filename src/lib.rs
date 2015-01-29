@@ -166,7 +166,7 @@ impl Vector3 {
     }
 
     pub fn from_scalar(scalar: f32) -> Self {
-        Vector3::from_array([scalar, scalar, scalar])
+        Vector3::new(scalar, scalar, scalar)
     }
 
     pub fn length(&self) -> f32 {
@@ -174,9 +174,7 @@ impl Vector3 {
     }
 
     pub fn distance(&self, other: &Vector3) -> f32 {
-        let mut result = other.clone();
-        result.subtract(self);
-        result.length()
+        other.subtract(self).length()
     }
 
     pub fn dot(&self, other: &Vector3) -> f32 {
@@ -193,33 +191,30 @@ impl Vector3 {
             self.0[0] * other.0[1] - other.0[0] * self.0[1])
     }
 
-    pub fn normalize(&mut self) {
-        let value = self.dot(self).rsqrt();
-        self.scale(value);
+    pub fn normalize(&self) -> Self {
+        self.scale(self.dot(self).rsqrt())
     }
 
-    pub fn subtract(&mut self, other: &Vector3) {
-        let mut result = other.clone();
-        result.negate();
-        self.add(&result);
+    pub fn subtract(&self, other: &Vector3) -> Self {
+        self.add(&other.negate())
     }
 
-    pub fn add(&mut self, other: &Vector3) {
-        self.0[0] += other.0[0];
-        self.0[1] += other.0[1];
-        self.0[2] += other.0[2];
+    pub fn add(&self, other: &Vector3) -> Self {
+        Vector3::new(self.0[0] + other.0[0],
+                     self.0[1] + other.0[1],
+                     self.0[2] + other.0[2])
     }
 
-    pub fn negate(&mut self) {
-        self.0[0] = -self.0[0];
-        self.0[1] = -self.0[1];
-        self.0[2] = -self.0[2];
+    pub fn negate(&self) -> Self {
+        Vector3::new(-self.0[0],
+                     -self.0[1],
+                     -self.0[2])
     }
 
-    pub fn scale(&mut self, scalar: f32) {
-        self.0[0] *= scalar;
-        self.0[1] *= scalar;
-        self.0[2] *= scalar;
+    pub fn scale(&self, scalar: f32) -> Self {
+        Vector3::new(self.0[0] * scalar,
+                     self.0[1] * scalar,
+                     self.0[2] * scalar)
     }
 }
 
