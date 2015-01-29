@@ -103,8 +103,8 @@ impl Vector4 {
         Vector4(array)
     }
 
-    pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Vector4::from_array([x, y, z, 1.0])
+    pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
+        Vector4::from_array([x, y, z, w])
     }
 
     pub fn from_scalar(scalar: f32) -> Self {
@@ -131,7 +131,7 @@ fn test_scale() {
     assert_eq!(m[2][2], 1.0);
     m.scale(3.0, 3.0, 3.0);
     assert_eq!(m[2][2], 3.0);
-    m.scale_by_vector(&Vector4::new(2.0, 4.0, 3.0));
+    m.scale_by_vector(&Vector4::new(2.0, 4.0, 3.0, 1.0));
     assert_eq!(m[2][2], 9.0);
 }
 
