@@ -38,7 +38,6 @@ impl Matrix4 {
                              [0.0, 0.0, 0.0, 1.0]])
     }
 
-
 	/// Builds a scale 4 * 4 matrix created from 3 scalars.
 	/// Input matrix multiplied by this scale matrix.
     pub fn scale(&mut self, x: f32, y: f32, z: f32) {
