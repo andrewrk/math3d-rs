@@ -5,4 +5,4 @@ version = "0.0.1"
 authors = ["Andrew Kelley <superjoe30@gmail.com>"]
 license = "MIT"
 description = "A simple rust library for computer-graphics matrix calculations."
-repository = "git://github.com/andrewrk/math3d-rs.git"
+repository = "https://github.com/andrewrk/math3d-rs"
