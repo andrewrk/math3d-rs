@@ -1,4 +1,4 @@
-#![allow(unstable)]
+#![feature(std_misc)]
 
 use std::ops::{Index, IndexMut};
 use std::num::Float;
@@ -38,8 +38,18 @@ impl Matrix4 {
                              [0.0, 0.0, 0.0, 1.0]])
     }
 
-	/// Builds a scale 4 * 4 matrix created from 3 scalars.
-	/// Input matrix multiplied by this scale matrix.
+    pub fn ortho(left: f32, right: f32, bottom: f32, top: f32) -> Self {
+        let mut m = Matrix4::identity();
+        m.0[0][0] = 2.0 / (right - left);
+        m.0[1][1] = 2.0 / (top - bottom);
+        m.0[2][2] = -1.0;
+        m.0[3][0] = -(right + left) / (right - left);
+        m.0[3][1] = -(top + bottom) / (top - bottom);
+        m
+    }
+
+    /// Builds a scale 4 * 4 matrix created from 3 scalars.
+    /// Input matrix multiplied by this scale matrix.
     pub fn scale(&mut self, x: f32, y: f32, z: f32) {
         self.0[0][0] *= x;
         self.0[0][1] *= x;
@@ -62,8 +72,8 @@ impl Matrix4 {
     }
 
 
-	/// Builds a translation 4 * 4 matrix created from a vector of 3 components.
-	/// Input matrix multiplied by this translation matrix.
+    /// Builds a translation 4 * 4 matrix created from a vector of 3 components.
+    /// Input matrix multiplied by this translation matrix.
     pub fn translate(&mut self, x: f32, y: f32, z: f32) {
         self.0[3][0] += self.0[0][0] * x + self.0[1][0] * y + self.0[2][0] * z;
         self.0[3][1] += self.0[0][1] * x + self.0[1][1] * y + self.0[2][1] * z;
@@ -130,9 +140,9 @@ impl Vector3 {
     /// returns the cross product
     pub fn cross(&self, other: &Vector3) -> Vector3 {
         Vector3::new(
-			self.0[1] * other.0[2] - other.0[1] * self.0[2],
-			self.0[2] * other.0[0] - other.0[2] * self.0[0],
-			self.0[0] * other.0[1] - other.0[0] * self.0[1])
+            self.0[1] * other.0[2] - other.0[1] * self.0[2],
+            self.0[2] * other.0[0] - other.0[2] * self.0[0],
+            self.0[0] * other.0[1] - other.0[0] * self.0[1])
     }
 
     pub fn normalize(&mut self) {
@@ -195,4 +205,17 @@ fn test_translate() {
     assert_eq!(m[3][0], 1.0);
     assert_eq!(m[3][1], 2.0);
     assert_eq!(m[3][2], 3.0);
+}
+
+#[test]
+fn test_ortho() {
+    let m = Matrix4::ortho(0.0, 640.0, 480.0, 0.0);
+    assert_eq!(m[0][0], 0.003125);
+    assert_eq!((m[1][1] * 100000.0).round(), -417.0);
+    assert_eq!(m[2][2], -1.0);
+    assert_eq!(m[3][3], 1.0);
+
+    assert_eq!(m[3][0], -1.0);
+    assert_eq!(m[3][1], 1.0);
+    assert_eq!(m[3][2], 0.0);
 }
