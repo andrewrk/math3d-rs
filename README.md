@@ -15,5 +15,5 @@ does before I'll merge it.
 
 When in doubt, I copied the API and code from
 [glm](https://github.com/g-truc/glm/). This library follows the
-[right hand rule](https://en.wikipedia.org/wiki/Right-hand_rule), and all angles
-are in radians because degrees are for presentation, not math.
+[right hand rule](https://en.wikipedia.org/wiki/Right-hand_rule), all angles
+are in radians, and matrices are in row-major order.
