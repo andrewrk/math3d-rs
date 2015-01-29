@@ -75,16 +75,17 @@ impl Matrix4 {
         self.scale(v[0], v[1], v[2])
     }
 
-
     /// Builds a translation 4 * 4 matrix created from a vector of 3 components.
     /// Input matrix multiplied by this translation matrix.
-    pub fn translate(&mut self, x: f32, y: f32, z: f32) {
-        self.0[0][3] += self.0[0][0] * x + self.0[0][1] * y + self.0[0][2] * z;
-        self.0[1][3] += self.0[1][0] * x + self.0[1][1] * y + self.0[1][2] * z;
-        self.0[2][3] += self.0[2][0] * x + self.0[2][1] * y + self.0[2][2] * z;
+    pub fn translate(&self, x: f32, y: f32, z: f32) -> Self {
+        Matrix4::from_array([[self.0[0][0], self.0[0][1], self.0[0][2], self.0[0][3] + self.0[0][0] * x + self.0[0][1] * y + self.0[0][2] * z],
+                             [self.0[1][0], self.0[1][1], self.0[1][2], self.0[1][3] + self.0[1][0] * x + self.0[1][1] * y + self.0[1][2] * z],
+                             [self.0[2][0], self.0[2][1], self.0[2][2], self.0[2][3] + self.0[2][0] * x + self.0[2][1] * y + self.0[2][2] * z],
+                             [self.0[3][0], self.0[3][1], self.0[3][2], self.0[3][3]]])
+
     }
 
-    pub fn translate_by_vector(&mut self, v: &Vector3) {
+    pub fn translate_by_vector(&self, v: &Vector3) -> Self {
         self.translate(v[0], v[1], v[2])
     }
 
@@ -254,7 +255,7 @@ fn test_scale() {
 
 #[test]
 fn test_translate() {
-    let mut m = Matrix4::from_array([
+    let m = Matrix4::from_array([
             [0.840188, 0.911647, 0.277775, 0.364784],
             [0.394383, 0.197551, 0.55397, 0.513401],
             [0.783099, 0.335223, 0.477397, 0.95223],
@@ -264,9 +265,8 @@ fn test_translate() {
             [0.394383, 0.197551, 0.55397, 1.06311],
             [0.783099, 0.335223, 0.477397, 1.60706],
             [0.79844, 0.76823, 0.628871, 1.0]]);
-
-    m.translate(0.141603, 0.717297, 0.635712);
-    assert_matrix_eq(&m, &expected);
+    let answer = m.translate(0.141603, 0.717297, 0.635712);
+    assert_matrix_eq(&answer, &expected);
 }
 
 #[test]
