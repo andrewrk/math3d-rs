@@ -3,3 +3,4 @@
 name = "math3d"
 version = "0.0.1"
 authors = ["Andrew Kelley <superjoe30@gmail.com>"]
+license = "MIT"
