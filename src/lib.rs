@@ -57,8 +57,8 @@ impl Matrix4 {
         m.0[0][0] = 2.0 / (right - left);
         m.0[1][1] = 2.0 / (top - bottom);
         m.0[2][2] = -1.0;
-        m.0[3][0] = -(right + left) / (right - left);
-        m.0[3][1] = -(top + bottom) / (top - bottom);
+        m.0[0][3] = -(right + left) / (right - left);
+        m.0[1][3] = -(top + bottom) / (top - bottom);
         m
     }
 
@@ -266,21 +266,23 @@ fn test_translate() {
 
 #[test]
 fn test_ortho() {
-    let m = Matrix4::ortho(0.0, 640.0, 480.0, 0.0);
-    assert_eq!(m[0][0], 0.003125);
-    assert_f_eq(m[1][1], -0.0041666667);
-    assert_eq!(m[2][2], -1.0);
-    assert_eq!(m[3][3], 1.0);
+    let m = Matrix4::ortho(0.840188, 0.394383, 0.783099, 0.79844);
 
-    assert_eq!(m[3][0], -1.0);
-    assert_eq!(m[3][1], 1.0);
-    assert_eq!(m[3][2], 0.0);
+    let expected = Matrix4::from_array([
+        [-4.48627, 0.0, 0.0, 2.76931],
+        [0.0, 130.371, 0.0, -103.094],
+        [0.0, 0.0, -1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]]);
+
+    println!("m:\n{:?}", m);
+
+    assert_matrix_eq(&m, &expected);
 }
 
 #[cfg(test)]
 fn assert_f_eq(left: f32, right: f32) {
     let diff = (left - right).abs();
-    let within_range = diff < 0.0001;
+    let within_range = diff < 0.01;
     assert_eq!(within_range, true);
 }
 
