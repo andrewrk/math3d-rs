@@ -96,6 +96,51 @@ impl Matrix4 {
                              [self.0[0][3], self.0[1][3], self.0[2][3], self.0[3][3]]])
     }
 
+
+    /// Builds a rotation 4 * 4 matrix created from an axis vector and an angle.
+    /// Input matrix multiplied by this rotation matrix.
+    /// angle: Rotation angle expressed in radians.
+    /// axis: Rotation axis, recommanded to be normalized.
+    pub fn rotate(&self, angle: f32, axis: &Vector3) -> Self {
+        let c = angle.cos();
+        let s = angle.sin();
+        let axis = axis.normalize();
+        let temp = axis.scale(1.0 - c);
+
+        let rotate = Matrix4::from_array(
+            [[c   + temp.0[0] * axis.0[0],                 0.0 + temp.0[1] * axis.0[0] - s * axis.0[2], 0.0 + temp.0[2] * axis.0[0] + s * axis.0[1], 0.0],
+             [0.0 + temp.0[0] * axis.0[1] + s * axis.0[2], c   + temp.0[1] * axis.0[1],                 0.0 + temp.0[2] * axis.0[1] - s * axis.0[0], 0.0],
+             [0.0 + temp.0[0] * axis.0[2] - s * axis.0[1], 0.0 + temp.0[1] * axis.0[2] + s * axis.0[0], c   + temp.0[2] * axis.0[2], 0.0],
+             [0.0, 0.0, 0.0, 0.0]]);
+
+        Matrix4::from_array([
+            [
+                self.0[0][0] * rotate.0[0][0] + self.0[0][1] * rotate.0[1][0] + self.0[0][2] * rotate.0[2][0],
+                self.0[0][0] * rotate.0[0][1] + self.0[0][1] * rotate.0[1][1] + self.0[0][2] * rotate.0[2][1],
+                self.0[0][0] * rotate.0[0][2] + self.0[0][1] * rotate.0[1][2] + self.0[0][2] * rotate.0[2][2],
+                self.0[0][3]
+            ],
+            [
+                self.0[1][0] * rotate.0[0][0] + self.0[1][1] * rotate.0[1][0] + self.0[1][2] * rotate.0[2][0],
+                self.0[1][0] * rotate.0[0][1] + self.0[1][1] * rotate.0[1][1] + self.0[1][2] * rotate.0[2][1],
+                self.0[1][0] * rotate.0[0][2] + self.0[1][1] * rotate.0[1][2] + self.0[1][2] * rotate.0[2][2],
+                self.0[1][3]
+            ],
+            [
+                self.0[2][0] * rotate.0[0][0] + self.0[2][1] * rotate.0[1][0] + self.0[2][2] * rotate.0[2][0],
+                self.0[2][0] * rotate.0[0][1] + self.0[2][1] * rotate.0[1][1] + self.0[2][2] * rotate.0[2][1],
+                self.0[2][0] * rotate.0[0][2] + self.0[2][1] * rotate.0[1][2] + self.0[2][2] * rotate.0[2][2],
+                self.0[2][3]
+            ],
+            [
+                self.0[3][0] * rotate.0[0][0] + self.0[3][1] * rotate.0[1][0] + self.0[3][2] * rotate.0[2][0],
+                self.0[3][0] * rotate.0[0][1] + self.0[3][1] * rotate.0[1][1] + self.0[3][2] * rotate.0[2][1],
+                self.0[3][0] * rotate.0[0][2] + self.0[3][1] * rotate.0[1][2] + self.0[3][2] * rotate.0[2][2],
+                self.0[3][3]
+            ]
+        ])
+    }
+
     /// matrix multiplication
     pub fn mult(&self, other: &Matrix4) -> Matrix4 {
         Matrix4::from_array([
@@ -325,4 +370,25 @@ fn test_mult() {
                                       [1.48683 , 1.15203 , 1.89932 , 2.05661 ]]);
     let tmp = m1.mult(&m2);
     assert_matrix_eq(&tmp, &answer);
+}
+
+#[test]
+fn test_rotate() {
+    let m1 = Matrix4::from_array([
+            [0.840188, 0.911647, 0.277775, 0.364784],
+            [0.394383, 0.197551, 0.55397, 0.513401],
+            [0.783099, 0.335223, 0.477397, 0.95223],
+            [0.79844, 0.76823, 0.628871, 0.916195]]);
+    let angle = 0.635712;
+
+    let axis = Vector3::new(0.606969, 0.141603, 0.717297);
+
+    let expected = Matrix4::from_array([
+            [1.17015, 0.488019, 0.0821911, 0.364784],
+            [0.444151, 0.212659, 0.508874, 0.513401],
+            [0.851739, 0.126319, 0.460555, 0.95223],
+            [1.06829, 0.530801, 0.447396, 0.916195]]);
+
+    let actual = m1.rotate(angle, &axis);
+    assert_matrix_eq(&actual, &expected);
 }
